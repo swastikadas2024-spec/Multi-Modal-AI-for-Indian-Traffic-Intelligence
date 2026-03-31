@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SmartTraffic India</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #0d0d0f;
+    --bg2: #131316;
+    --bg3: #1a1a1f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #f0f0f0;
+    --muted: #6b6b7a;
+    --muted2: #9595a5;
+    --amber: #f5a623;
+    --amber-dim: rgba(245,166,35,0.12);
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.1);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.1);
+    --yellow: #eab308;
+    --yellow-dim: rgba(234,179,8,0.1);
+    --blue: #3b82f6;
+    --blue-dim: rgba(59,130,246,0.1);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 40px; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(13,13,15,0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; font-weight: 600; }
+.logo-dot { width: 8px; height: 8px; background: var(--amber); border-radius: 50%; animation: pulse 2s ease infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.75)} }
+.nav-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; padding: 2px 8px; background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); border-radius: 4px; }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a { font-size: 0.8rem; color: var(--muted2); text-decoration: none; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+
+.hero {
+    min-height: 100vh; padding: 120px 60px 80px;
+    display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden;
+}
+.hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(245,166,35,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(245,166,35,0.035) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 20%, transparent 100%);
+}
+.eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.eyebrow-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+.eyebrow-text { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--green); letter-spacing: 0.15em; text-transform: uppercase; }
+.hero h1 { font-size: clamp(3rem, 6vw, 5.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.03em; max-width: 760px; margin-bottom: 24px; }
+.hero h1 .hi { color: var(--amber); }
+.hero-sub { font-size: 1rem; color: var(--muted2); max-width: 500px; line-height: 1.7; font-weight: 300; margin-bottom: 48px; }
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 28px; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: none; border-radius: 8px; transition: all 0.2s; border: none; }
+.btn-amber { background: var(--amber); color: #000; }
+.btn-amber:hover { background: #f0b432; transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--muted2); border: 1px solid var(--border2); }
+.btn-outline:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+.stats-bar { display: flex; margin-top: 80px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; max-width: 680px; background: var(--bg2); }
+.stat-item { flex: 1; padding: 20px 24px; border-right: 1px solid var(--border); }
+.stat-item:last-child { border-right: none; }
+.stat-val { font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; font-weight: 500; color: var(--amber); line-height: 1; margin-bottom: 4px; }
+.stat-key { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+
+section { padding: 100px 60px; border-top: 1px solid var(--border); }
+.sec-header { display: flex; align-items: flex-start; gap: 36px; margin-bottom: 56px; }
+.phase-num { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.1em; padding: 6px 12px; border: 1px solid var(--border); border-radius: 6px; white-space: nowrap; margin-top: 6px; }
+.sec-title h2 { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 12px; }
+.sec-title p { font-size: 0.92rem; color: var(--muted2); line-height: 1.7; max-width: 480px; font-weight: 300; }
+
+.phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 28px; }
+.card-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.card-lbl::before { content: ''; width: 14px; height: 1px; background: var(--muted); }
+
+.signal-row { display: flex; gap: 5px; align-items: center; margin-bottom: 20px; }
+.sig { width: 10px; height: 28px; border-radius: 3px; }
+.sig.r { background: var(--red); }
+.sig.y { background: var(--yellow); }
+.sig.g { background: var(--green); }
+
+.acc-row { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.acc-chip { padding: 8px 14px; border-radius: 8px; font-family: 'JetBrains Mono', monospace; }
+.acc-chip.gr { background: var(--green-dim); border: 1px solid rgba(34,197,94,0.2); }
+.acc-chip.am { background: var(--amber-dim); border: 1px solid rgba(245,166,35,0.2); }
+.acc-chip.bl { background: var(--blue-dim);  border: 1px solid rgba(59,130,246,0.2); }
+.acc-num { font-size: 1.05rem; font-weight: 500; line-height: 1; }
+.acc-chip.gr .acc-num { color: var(--green); }
+.acc-chip.am .acc-num { color: var(--amber); }
+.acc-chip.bl .acc-num { color: var(--blue); }
+.acc-lbl { font-size: 0.62rem; color: var(--muted2); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 2px; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+.tag { font-size: 0.7rem; padding: 3px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; color: var(--muted2); }
+.card-desc { font-size: 0.85rem; color: var(--muted2); line-height: 1.75; font-weight: 300; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 7px; font-weight: 500; }
+textarea, input[type="number"], select { width: 100%; padding: 11px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 0.88rem; outline: none; transition: border-color 0.2s; appearance: none; }
+textarea:focus, input:focus, select:focus { border-color: var(--amber); }
+textarea { resize: vertical; min-height: 108px; }
+select option { background: var(--bg3); }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.submit-btn { width: 100%; padding: 12px; background: var(--amber); color: #000; border: none; border-radius: 8px; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 4px; letter-spacing: 0.02em; }
+.submit-btn:hover { background: #f0b432; transform: translateY(-1px); }
+.submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.result-box { margin-top: 14px; padding: 16px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; display: none; animation: fadeUp 0.3s ease; }
+.result-box.show { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.res-cat { font-size: 1rem; font-weight: 600; color: var(--amber); margin-bottom: 4px; }
+.res-urg { font-size: 0.82rem; color: var(--muted2); line-height: 1.5; }
+
+.cong-box { padding: 20px; border-radius: 8px; margin-top: 14px; display: none; animation: fadeUp 0.3s ease; }
+.cong-box.show { display: block; }
+.cong-box.LOW    { background: var(--green-dim); border: 1px solid rgba(34,197,94,0.2); }
+.cong-box.MEDIUM { background: var(--yellow-dim); border: 1px solid rgba(234,179,8,0.2); }
+.cong-box.HIGH   { background: var(--red-dim);   border: 1px solid rgba(239,68,68,0.2); }
+.cong-level { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 600; line-height: 1; margin-bottom: 6px; }
+.cong-box.LOW    .cong-level { color: var(--green); }
+.cong-box.MEDIUM .cong-level { color: var(--yellow); }
+.cong-box.HIGH   .cong-level { color: var(--red); }
+.cong-advice { font-size: 0.82rem; color: var(--muted2); line-height: 1.6; }
+
+.upload-zone { border: 1px dashed var(--border2); border-radius: 8px; padding: 36px 24px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg3); margin-bottom: 12px; }
+.upload-zone:hover { border-color: var(--amber); background: rgba(245,166,35,0.03); }
+.upload-icon { font-size: 1.4rem; margin-bottom: 8px; display: block; color: var(--muted); }
+.upload-text { font-size: 0.82rem; color: var(--muted2); }
+.upload-sub { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+#imageUpload { display: none; }
+.preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; display: none; border: 1px solid var(--border); }
+
+footer { border-top: 1px solid var(--border); padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; }
+.footer-l { display: flex; align-items: center; gap: 12px; }
+.footer-logo { font-size: 0.88rem; font-weight: 600; }
+.footer-sep { width: 1px; height: 14px; background: var(--border2); }
+.footer-tag { font-size: 0.75rem; color: var(--muted); }
+.footer-r { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.05em; }
+
+.spin { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-left: 6px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo">
+        <div class="logo-dot"></div>
+        SmartTraffic India
+        <span class="nav-badge">LIVE</span>
+    </div>
+    <ul class="nav-links">
+        <li><a href="#phase1">NLP</a></li>
+        <li><a href="#phase2">Prediction</a></li>
+        <li><a href="#phase3">Vision</a></li>
+    </ul>
+</nav>
+
+<section class="hero">
+    <div class="eyebrow">
+        <div class="eyebrow-dot"></div>
+
+    </div>
+    <h1>India's roads,<br>understood<br>by <span class="hi">AI.</span></h1>
+    <p class="hero-sub">Three intelligent systems working together — reading complaints, forecasting congestion, and detecting vehicles. Built for the chaos of Indian traffic.</p>
+
+    <div class="stats-bar">
+        <div class="stat-item"><div class="stat-val">91.25%</div><div class="stat-key">NLP Accuracy</div></div>
+        <div class="stat-item"><div class="stat-val">93.50%</div><div class="stat-key">Congestion Accuracy</div></div>
+        <div class="stat-item"><div class="stat-val">91.55%</div><div class="stat-key">Vision Accuracy</div></div>
+        <div class="stat-item"><div class="stat-val">1.4k+</div><div class="stat-key">Real Complaints</div></div>
+    </div>
+</section>
+
+<section id="phase1">
+    <div class="sec-header">
+    
+        <div class="sec-title">
+            <h2>Complaint Classifier</h2>
+            <p>Type any traffic complaint in plain English. Our NLP model reads it and instantly categorizes the problem — routing it to the right authority.</p>
+        </div>
+    </div>
+    <div class="phase-grid">
+        <div class="card">
+            <div class="card-lbl">Model Info</div>
+            <div class="signal-row"><div class="sig r"></div><div class="sig y" style="opacity:.3"></div><div class="sig g" style="opacity:.9"></div></div>
+            <div class="acc-row">
+                <div class="acc-chip gr"><div class="acc-num">91.25%</div><div class="acc-lbl">Accuracy</div></div>
+                <div class="acc-chip am"><div class="acc-num">91.30%</div><div class="acc-lbl">F1 Score</div></div>
+            </div>
+            <div class="tags">
+                <span class="tag">TF-IDF Vectorizer</span><span class="tag">Gradient Boosting</span><span class="tag">1,482 Samples</span><span class="tag">5 Categories</span>
+            </div>
+            <p class="card-desc">Trained on real traffic complaints from public datasets. Classifies into: Congestion, Signal Issue, Road Damage, Public Transport, Road Safety.</p>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Input</div>
+            <div class="field">
+                <label>Traffic Complaint</label>
+                <textarea id="complaint" placeholder="e.g. There is a huge pothole on MG Road near the signal causing accidents daily..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="classifyComplaint()">Classify Complaint</button>
+            <div class="result-box" id="result1">
+                <div class="res-cat" id="r1category"></div>
+                <div class="res-urg" id="r1urgency"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="phase2">
+    <div class="sec-header">
+        
+        <div class="sec-title">
+            <h2>Congestion Predictor</h2>
+            <p>Enter time and weather conditions. Our ML model forecasts whether roads will be clear, moderate, or heavily congested.</p>
+        </div>
+    </div>
+    <div class="phase-grid">
+        <div class="card">
+            <div class="card-lbl">Model Info</div>
+            <div class="signal-row"><div class="sig r" style="opacity:.3"></div><div class="sig y" style="opacity:.9"></div><div class="sig g" style="opacity:.9"></div></div>
+            <div class="acc-row">
+                <div class="acc-chip gr"><div class="acc-num">93.50%</div><div class="acc-lbl">Accuracy</div></div>
+                <div class="acc-chip bl"><div class="acc-num">48,204</div><div class="acc-lbl">Data Points</div></div>
+            </div>
+            <div class="tags">
+                <span class="tag">Random Forest</span><span class="tag">Weather Fusion</span><span class="tag">Hourly Data</span><span class="tag">UCI Dataset</span>
+            </div>
+            <p class="card-desc">Trained on real hourly traffic sensor data. Fuses time of day, day of week, weather and temperature to predict congestion level.</p>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Input</div>
+            <div class="field-row">
+                <div class="field"><label>Hour (0–23)</label><input type="number" id="hour" value="8" min="0" max="23"></div>
+                <div class="field"><label>Day (0=Mon 6=Sun)</label><input type="number" id="day" value="0" min="0" max="6"></div>
+            </div>
+            <div class="field-row">
+                <div class="field"><label>Weather</label>
+                    <select id="weather"><option>Clear</option><option>Clouds</option><option>Rain</option><option>Fog</option><option>Snow</option></select>
+                </div>
+                <div class="field"><label>Temperature (K)</label><input type="number" id="temp" value="285"></div>
+            </div>
+            <button class="submit-btn" onclick="predictCongestion()">Predict Congestion</button>
+            <div class="cong-box" id="result2">
+                <div class="cong-level" id="r2level"></div>
+                <div class="cong-advice" id="r2advice"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="phase3">
+    <div class="sec-header">
+        
+        <div class="sec-title">
+            <h2>Vehicle Detector</h2>
+            <p>Upload a road or vehicle image. Our ResNet-18 model identifies car vs heavy vehicle — signaling potential congestion risk.</p>
+        </div>
+    </div>
+    <div class="phase-grid">
+        <div class="card">
+            <div class="card-lbl">Model Info</div>
+            <div class="signal-row"><div class="sig r" style="opacity:.3"></div><div class="sig y" style="opacity:.3"></div><div class="sig g" style="opacity:.9"></div></div>
+            <div class="acc-row">
+                <div class="acc-chip gr"><div class="acc-num">91.55%</div><div class="acc-lbl">Accuracy</div></div>
+                <div class="acc-chip bl"><div class="acc-num">10,000</div><div class="acc-lbl">Images</div></div>
+            </div>
+            <div class="tags">
+                <span class="tag">ResNet-18</span><span class="tag">Transfer Learning</span><span class="tag">PyTorch</span><span class="tag">CIFAR-10</span>
+            </div>
+            <p class="card-desc">Fine-tuned ResNet-18 using transfer learning. Pre-trained on ImageNet, adapted to classify cars vs heavy vehicles to assess road load.</p>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Input</div>
+            <img class="preview-img" id="previewImg" src="" alt="">
+            <div class="upload-zone" onclick="document.getElementById('imageUpload').click()">
+                <span class="upload-icon">↑</span>
+                <div class="upload-text">Click to upload a vehicle or road image</div>
+                <div class="upload-sub">JPG · PNG supported</div>
+            </div>
+            <input type="file" id="imageUpload" accept="image/*" onchange="previewImage(event)">
+            <button class="submit-btn" onclick="detectVehicle()">Detect Vehicle</button>
+            <div class="result-box" id="result3" style="margin-top:12px">
+                <div class="res-cat" id="r3result"></div>
+                <div class="res-urg" id="r3advice"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="footer-l">
+        <div class="footer-logo">SmartTraffic India</div>
+        <div class="footer-sep"></div>
+        <div class="footer-tag">NLP · ML · Computer Vision</div>
+    </div>
+    
+</footer>
+
+<script>
+function previewImage(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const img = document.getElementById('previewImg');
+    img.src = URL.createObjectURL(file);
+    img.style.display = 'block';
+}
+async function classifyComplaint() {
+    const complaint = document.getElementById('complaint').value.trim();
+    if (!complaint) return alert('Please enter a complaint.');
+    const btn = event.target;
+    btn.innerHTML = 'Classifying <span class="spin"></span>';
+    btn.disabled = true;
+    try {
+        const res = await fetch('/classify_complaint', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ complaint }) });
+        const d = await res.json();
+        document.getElementById('r1category').textContent = d.category;
+        document.getElementById('r1urgency').textContent  = d.urgency;
+        document.getElementById('result1').classList.add('show');
+    } catch(e) { alert('Make sure Flask is running on localhost:5000'); }
+    btn.innerHTML = 'Classify Complaint'; btn.disabled = false;
+}
+async function predictCongestion() {
+    const btn = event.target;
+    btn.innerHTML = 'Predicting <span class="spin"></span>'; btn.disabled = true;
+    try {
+        const res = await fetch('/predict_congestion', { method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ hour: document.getElementById('hour').value, day: document.getElementById('day').value, month: 6, temp: document.getElementById('temp').value, rain: 0, clouds: 40, weather: document.getElementById('weather').value }) });
+        const d = await res.json();
+        const box = document.getElementById('result2');
+        box.className = 'cong-box show ' + d.congestion;
+        document.getElementById('r2level').textContent = d.congestion;
+        document.getElementById('r2advice').textContent = d.advice;
+    } catch(e) { alert('Make sure Flask is running on localhost:5000'); }
+    btn.innerHTML = 'Predict Congestion'; btn.disabled = false;
+}
+async function detectVehicle() {
+    const file = document.getElementById('imageUpload').files[0];
+    if (!file) return alert('Please upload an image first.');
+    const btn = event.target;
+    btn.innerHTML = 'Detecting <span class="spin"></span>'; btn.disabled = true;
+    try {
+        const fd = new FormData(); fd.append('image', file);
+        const res = await fetch('/detect_vehicle', { method: 'POST', body: fd });
+        const d = await res.json();
+        document.getElementById('r3result').textContent = d.result;
+        document.getElementById('r3advice').textContent = d.advice;
+        document.getElementById('result3').classList.add('show');
+    } catch(e) { alert('Make sure Flask is running on localhost:5000'); }
+    btn.innerHTML = 'Detect Vehicle'; btn.disabled = false;
+}
+</script>
+</body>
+</html>
