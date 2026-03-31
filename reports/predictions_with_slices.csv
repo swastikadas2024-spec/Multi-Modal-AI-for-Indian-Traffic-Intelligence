@@ -1,0 +1,13 @@
+text,label,location,hour,weather,predicted_label,confidence,time_slice,language_slice
+Traffic jam near central bridge,congestion,downtown,8,clear,congestion,0.82,morning,english_only
+Heavy congestion at ring road,congestion,north_zone,17,rain,congestion,0.82,afternoon,english_only
+Minor accident at market street,accident,south_zone,19,fog,accident,0.9,evening,english_only
+Road blocked due to potholes,potholes,suburbs,10,clear,potholes,0.86,morning,english_only
+Bahut traffic hai yahan,congestion,downtown,21,rain,congestion,0.82,evening,hinglish_mixed
+Gaadi slip ho gayi rain mein,accident,south_zone,22,rain,accident,0.9,evening,hinglish_mixed
+Pothole ki wajah se vehicle damage,potholes,north_zone,7,clear,potholes,0.86,morning,hinglish_mixed
+Slow traffic in suburbs,congestion,suburbs,14,clear,congestion,0.82,afternoon,english_only
+Crash reported near airport road,accident,north_zone,12,fog,accident,0.9,afternoon,english_only
+Huge jam at MG Road,congestion,downtown,18,clear,congestion,0.82,evening,english_only
+Road mein gadda hai,potholes,south_zone,9,clear,potholes,0.86,morning,hinglish_mixed
+Vehicle collision in rain,accident,downtown,16,rain,accident,0.9,afternoon,english_only
