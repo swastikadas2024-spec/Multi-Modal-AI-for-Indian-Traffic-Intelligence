@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SmartTraffic India</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <style>
 :root {
     --bg: #0d0d0f;
@@ -145,6 +146,45 @@ select option { background: var(--bg3); }
 #imageUpload { display: none; }
 .preview-img { width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-bottom: 12px; display: none; border: 1px solid var(--border); }
 
+.incident-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 20px; align-items: start; }
+.map-shell { margin-top: 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg3); }
+.map-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.map-title { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+.map-note { font-size: 0.72rem; color: var(--muted2); }
+.map-badge { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg2); color: var(--muted2); text-transform: uppercase; letter-spacing: 0.08em; }
+.map-badge.high { color: var(--red); border-color: rgba(239,68,68,0.2); background: var(--red-dim); }
+.map-badge.medium { color: var(--amber); border-color: rgba(245,166,35,0.2); background: var(--amber-dim); }
+.map-badge.low { color: var(--green); border-color: rgba(34,197,94,0.2); background: var(--green-dim); }
+.incident-map { height: 320px; width: 100%; }
+.summary-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 18px; }
+.summary-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.summary-num { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: var(--amber); line-height: 1; margin-bottom: 6px; }
+.summary-lbl { font-size: 0.68rem; color: var(--muted2); text-transform: uppercase; letter-spacing: 0.08em; }
+.trend-box { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 18px; }
+.trend-title { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 10px; }
+.trend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.trend-card { border: 1px solid var(--border); border-radius: 8px; padding: 14px; background: rgba(255,255,255,0.02); }
+.trend-card .label { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted2); margin-bottom: 6px; }
+.trend-card .value { font-size: 0.95rem; font-weight: 600; color: var(--amber); margin-bottom: 4px; }
+.trend-card .meta { font-size: 0.72rem; color: var(--muted2); }
+.incident-list { display: grid; gap: 12px; }
+.incident-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.incident-top { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.incident-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+.incident-meta { font-size: 0.72rem; color: var(--muted2); line-height: 1.5; }
+.badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.badge { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg2); color: var(--muted2); text-transform: uppercase; letter-spacing: 0.06em; }
+.badge.critical { color: var(--red); border-color: rgba(239,68,68,0.2); background: var(--red-dim); }
+.badge.high { color: var(--amber); border-color: rgba(245,166,35,0.2); background: var(--amber-dim); }
+.badge.medium { color: var(--green); border-color: rgba(34,197,94,0.2); background: var(--green-dim); }
+
+.status-note { font-size: 0.76rem; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+.map-legend { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 16px 0; }
+.legend-pill { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg2); color: var(--muted2); text-transform: uppercase; letter-spacing: 0.06em; }
+.legend-pill.high { color: var(--red); border-color: rgba(239,68,68,0.2); background: var(--red-dim); }
+.legend-pill.medium { color: var(--amber); border-color: rgba(245,166,35,0.2); background: var(--amber-dim); }
+.legend-pill.low { color: var(--green); border-color: rgba(34,197,94,0.2); background: var(--green-dim); }
+
 footer { border-top: 1px solid var(--border); padding: 28px 60px; display: flex; justify-content: space-between; align-items: center; }
 .footer-l { display: flex; align-items: center; gap: 12px; }
 .footer-logo { font-size: 0.88rem; font-weight: 600; }
@@ -154,6 +194,11 @@ footer { border-top: 1px solid var(--border); padding: 28px 60px; display: flex;
 
 .spin { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #000; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-left: 6px; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 980px) {
+    .phase-grid, .incident-grid { grid-template-columns: 1fr; }
+    .summary-row { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -304,6 +349,111 @@ footer { border-top: 1px solid var(--border); padding: 28px 60px; display: flex;
     </div>
 </section>
 
+<section id="community">
+    <div class="sec-header">
+        <div class="phase-num">04</div>
+        <div class="sec-title">
+            <h2>Community Reports</h2>
+            <p>Report a real traffic issue with a location and language. The system classifies the complaint, assigns a department, and keeps a live incident log.</p>
+        </div>
+    </div>
+    <div class="incident-grid">
+        <div class="card">
+            <div class="card-lbl">Report an Incident</div>
+            <div class="field">
+                <label>Your name (optional)</label>
+                <input type="text" id="reporterName" placeholder="Anonymous">
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Language</label>
+                    <select id="reportLanguage">
+                        <option>English</option>
+                        <option>Hindi</option>
+                        <option>Marathi</option>
+                        <option>Tamil</option>
+                        <option>Telugu</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Location / Landmark</label>
+                    <input type="text" id="reportLocation" placeholder="MG Road, near central signal">
+                </div>
+            </div>
+            <div class="field-row">
+                <div class="field">
+                    <label>Latitude (optional)</label>
+                    <input type="number" id="reportLatitude" step="0.000001" placeholder="19.0760">
+                </div>
+                <div class="field">
+                    <label>Longitude (optional)</label>
+                    <input type="number" id="reportLongitude" step="0.000001" placeholder="72.8777">
+                </div>
+            </div>
+            <div class="field">
+                <label>Complaint</label>
+                <textarea id="incidentComplaint" placeholder="Describe the problem as clearly as possible"></textarea>
+            </div>
+            <button class="submit-btn" onclick="reportIncident()">Submit Report</button>
+            <div class="status-note">This report is saved locally and classified into a department and urgency level.</div>
+            <div class="result-box" id="incidentResult">
+                <div class="res-cat" id="incidentCategory"></div>
+                <div class="res-urg" id="incidentDetails"></div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-lbl">Live Incident Feed</div>
+            <div class="summary-row">
+                <div class="summary-card">
+                    <div class="summary-num" id="summaryTotal">0</div>
+                    <div class="summary-lbl">Reports</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-num" id="summaryCritical">0</div>
+                    <div class="summary-lbl">Critical</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-num" id="summaryReported">0</div>
+                    <div class="summary-lbl">Open</div>
+                </div>
+            </div>
+            <div class="trend-box">
+                <div class="trend-title">Traffic Trend From Classifications</div>
+                <div class="trend-grid">
+                    <div class="trend-card">
+                        <div class="label">Most Reported</div>
+                        <div class="value" id="trendMostCategory">-</div>
+                        <div class="meta" id="trendMostCount">No data yet</div>
+                    </div>
+                    <div class="trend-card">
+                        <div class="label">Least Reported</div>
+                        <div class="value" id="trendLeastCategory">-</div>
+                        <div class="meta" id="trendLeastCount">No data yet</div>
+                    </div>
+                </div>
+                <div class="status-note" id="trendNote">This is based on saved complaint classifications, so it shows the areas/issues that appear most and least often in your reports.</div>
+            </div>
+            <div class="map-shell">
+                <div class="map-header">
+                    <div>
+                        <div class="map-title">Traffic Level Map</div>
+                        <div class="map-note">Composite score from complaints, congestion, weather, and vehicle detections.</div>
+                    </div>
+                    <div id="overallTrafficBadge" class="map-badge low">LOW · 0</div>
+                </div>
+                <div class="map-legend">
+                    <span class="legend-pill high">High traffic</span>
+                    <span class="legend-pill medium">Medium traffic</span>
+                    <span class="legend-pill low">Low traffic</span>
+                </div>
+                <div id="incidentMap" class="incident-map"></div>
+            </div>
+            <div class="incident-list" id="incidentList"></div>
+        </div>
+    </div>
+</section>
+
 <footer>
     <div class="footer-l">
         <div class="footer-logo">SmartTraffic India</div>
@@ -314,6 +464,9 @@ footer { border-top: 1px solid var(--border); padding: 28px 60px; display: flex;
 </footer>
 
 <script>
+let incidentMap;
+let incidentMarkers;
+
 function previewImage(e) {
     const file = e.target.files[0];
     if (!file) return;
@@ -365,6 +518,147 @@ async function detectVehicle() {
     } catch(e) { alert('Make sure Flask is running on localhost:5000'); }
     btn.innerHTML = 'Detect Vehicle'; btn.disabled = false;
 }
+
+function urgencyClass(text) {
+    const value = (text || '').toLowerCase();
+    if (value.includes('critical')) return 'critical';
+    if (value.includes('high')) return 'high';
+    return 'medium';
+}
+
+async function reportIncident() {
+    const btn = event.target;
+    const payload = {
+        reporter: document.getElementById('reporterName').value.trim(),
+        language: document.getElementById('reportLanguage').value,
+        location: document.getElementById('reportLocation').value.trim(),
+        latitude: document.getElementById('reportLatitude').value.trim(),
+        longitude: document.getElementById('reportLongitude').value.trim(),
+        complaint: document.getElementById('incidentComplaint').value.trim()
+    };
+    if (!payload.complaint) return alert('Please describe the incident first.');
+    btn.innerHTML = 'Submitting <span class="spin"></span>';
+    btn.disabled = true;
+    try {
+        const res = await fetch('/report_incident', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+        if (!res.ok) throw new Error(d.error || 'Failed to submit report');
+        document.getElementById('incidentCategory').textContent = d.category;
+        document.getElementById('incidentDetails').textContent = `${d.urgency} · ${d.department} · ${d.status}`;
+        document.getElementById('incidentResult').classList.add('show');
+        document.getElementById('incidentComplaint').value = '';
+        await refreshIncidents();
+    } catch (e) {
+        alert(e.message || 'Make sure Flask is running on localhost:5000');
+    }
+    btn.innerHTML = 'Submit Report';
+    btn.disabled = false;
+}
+
+function renderIncidentItem(incident) {
+    const badgeType = urgencyClass(incident.urgency);
+    return `
+        <div class="incident-item">
+            <div class="incident-top">
+                <div class="incident-title">${incident.category ? incident.category.replace(/_/g, ' ') : 'Unknown issue'}</div>
+                <div class="badge ${badgeType}">${incident.urgency || 'Medium urgency'}</div>
+            </div>
+            <div class="badge-row">
+                <span class="badge">${incident.department || 'Traffic Control Room'}</span>
+                <span class="badge">${incident.status || 'Reported'}</span>
+                <span class="badge">${incident.language || 'English'}</span>
+                <span class="badge">${incident.traffic_level || 'LOW'} ${incident.traffic_score != null ? '· ' + incident.traffic_score : ''}</span>
+            </div>
+            <div class="incident-meta">${incident.complaint || ''}</div>
+            <div class="incident-meta" style="margin-top:8px">Location: ${incident.location || 'Unspecified'} · By: ${incident.reporter || 'Anonymous'} · ${incident.timestamp || ''}</div>
+        </div>
+    `;
+}
+
+function initIncidentMap() {
+    if (incidentMap) return;
+    incidentMap = L.map('incidentMap', { scrollWheelZoom: false }).setView([20.5937, 78.9629], 5);
+    incidentMarkers = L.layerGroup().addTo(incidentMap);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(incidentMap);
+}
+
+function refreshIncidentMap(incidents) {
+    if (!incidentMap) initIncidentMap();
+    incidentMarkers.clearLayers();
+    const points = [];
+    (incidents || []).forEach((incident) => {
+        const lat = parseFloat(incident.latitude);
+        const lon = parseFloat(incident.longitude);
+        if (Number.isFinite(lat) && Number.isFinite(lon)) {
+            const level = (incident.traffic_level || 'LOW').toUpperCase();
+            const color = level === 'HIGH' ? '#ef4444' : level === 'MEDIUM' ? '#eab308' : '#22c55e';
+            const marker = L.circleMarker([lat, lon], {
+                radius: 11,
+                color,
+                fillColor: color,
+                fillOpacity: 0.85,
+                weight: 2
+            }).addTo(incidentMarkers);
+            marker.bindPopup(`
+                <strong>${(incident.category || 'Issue').replace(/_/g, ' ')}</strong><br>
+                Traffic level: ${level}<br>
+                Score: ${incident.traffic_score != null ? incident.traffic_score : 'n/a'}<br>
+                ${incident.location || 'Unspecified'}
+            `);
+            points.push([lat, lon]);
+        }
+    });
+    if (points.length === 1) {
+        incidentMap.setView(points[0], 13);
+    } else if (points.length > 1) {
+        incidentMap.fitBounds(points, { padding: [24, 24] });
+    }
+}
+
+async function refreshIncidents() {
+    try {
+        const [summaryRes, incidentsRes, trendRes] = await Promise.all([
+            fetch('/incident_summary'),
+            fetch('/traffic_map_data'),
+            fetch('/traffic_trend')
+        ]);
+        const summary = await summaryRes.json();
+        const trafficMap = await incidentsRes.json();
+        const trend = await trendRes.json();
+        document.getElementById('summaryTotal').textContent = summary.total || 0;
+        document.getElementById('summaryCritical').textContent = summary.critical || 0;
+        document.getElementById('summaryReported').textContent = summary.reported || 0;
+        document.getElementById('trendMostCategory').textContent = trend.most_reported ? trend.most_reported.category : '-';
+        document.getElementById('trendMostCount').textContent = trend.most_reported ? `${trend.most_reported.count} report(s)` : 'No data yet';
+        document.getElementById('trendLeastCategory').textContent = trend.least_reported ? trend.least_reported.category : '-';
+        document.getElementById('trendLeastCount').textContent = trend.least_reported ? `${trend.least_reported.count} report(s)` : 'No data yet';
+        const overallBadge = document.getElementById('overallTrafficBadge');
+        if (overallBadge) {
+            const level = (trafficMap.overall_level || 'LOW').toUpperCase();
+            overallBadge.className = `map-badge ${level.toLowerCase()}`;
+            overallBadge.textContent = `${level} · ${trafficMap.overall_score != null ? trafficMap.overall_score : 0}`;
+        }
+        refreshIncidentMap(trafficMap.incidents || []);
+        const list = document.getElementById('incidentList');
+        list.innerHTML = (trafficMap.incidents || []).map(renderIncidentItem).join('') || '<div class="incident-item">No reports yet. Submit the first incident.</div>';
+    } catch (e) {
+        const list = document.getElementById('incidentList');
+        if (list) list.innerHTML = '<div class="incident-item">Unable to load live incidents right now.</div>';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initIncidentMap();
+    refreshIncidents();
+});
 </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 </body>
 </html>
